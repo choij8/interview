@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>STAR Interview Repository</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">S</div>
+        <div>
+          <h1>STAR Repository</h1>
+          <p>Interview knowledge base</p>
+        </div>
+      </div>
+
+      <button id="newEntryBtn" class="primary-btn full-width">＋ New interview entry</button>
+
+      <nav class="nav-section">
+        <p class="nav-label">VIEW</p>
+        <button class="nav-item active" data-filter="all">All entries <span id="allCount">0</span></button>
+        <button class="nav-item" data-filter="favourite">Favourites <span id="favouriteCount">0</span></button>
+        <button class="nav-item" data-filter="draft">Drafts <span id="draftCount">0</span></button>
+        <button class="nav-item" data-filter="ready">Interview ready <span id="readyCount">0</span></button>
+      </nav>
+
+      <div class="nav-section">
+        <div class="section-heading">
+          <p class="nav-label">CATEGORIES</p>
+          <button id="manageCategoriesBtn" class="icon-btn" title="Manage categories">⚙</button>
+        </div>
+        <div id="categoryList"></div>
+      </div>
+
+      <div class="sidebar-footer">
+        <button id="importBtn" class="secondary-btn full-width">Import CSV / JSON</button>
+        <button id="exportJsonBtn" class="secondary-btn full-width">Export JSON</button>
+        <button id="exportCsvBtn" class="secondary-btn full-width">Export CSV</button>
+        <input id="fileInput" type="file" accept=".json,.csv,application/json,text/csv" hidden />
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div class="search-wrap">
+          <span>⌕</span>
+          <input id="searchInput" type="search" placeholder="Search questions, STAR responses, companies, roles or tags…" />
+        </div>
+        <div class="topbar-actions">
+          <select id="sortSelect" title="Sort entries">
+            <option value="updated-desc">Recently updated</option>
+            <option value="created-desc">Recently created</option>
+            <option value="title-asc">Question A–Z</option>
+            <option value="company-asc">Company A–Z</option>
+          </select>
+          <button id="themeToggle" class="icon-btn theme-btn" title="Toggle theme">◐</button>
+        </div>
+      </header>
+
+      <section class="workspace">
+        <div class="page-header">
+          <div>
+            <p class="eyebrow">INTERVIEW PREPARATION</p>
+            <h2 id="pageTitle">All interview entries</h2>
+            <p id="pageSubtitle">Build a reusable library of structured STAR responses.</p>
+          </div>
+          <div class="summary-cards">
+            <div class="summary-card"><strong id="totalEntries">0</strong><span>Total</span></div>
+            <div class="summary-card"><strong id="readyEntries">0</strong><span>Ready</span></div>
+            <div class="summary-card"><strong id="categoryCount">0</strong><span>Categories</span></div>
+          </div>
+        </div>
+
+        <div class="content-grid">
+          <section class="entry-list-panel">
+            <div class="list-toolbar">
+              <span id="resultsLabel">0 entries</span>
+              <button id="clearFiltersBtn" class="text-btn">Clear filters</button>
+            </div>
+            <div id="entryList" class="entry-list"></div>
+            <div id="emptyState" class="empty-state hidden">
+              <div class="empty-icon">✦</div>
+              <h3>No entries found</h3>
+              <p>Create your first STAR interview response or adjust your filters.</p>
+              <button class="primary-btn" id="emptyNewBtn">Create an entry</button>
+            </div>
+          </section>
+
+          <section id="detailPanel" class="detail-panel">
+            <div class="welcome-panel">
+              <div class="welcome-icon">★</div>
+              <h3>Select an interview entry</h3>
+              <p>Review and edit the question, Situation, Task, Action and Result in one place.</p>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="entryDialog" class="modal">
+    <form id="entryForm" method="dialog">
+      <div class="modal-header">
+        <div>
+          <p class="eyebrow">STAR INTERVIEW ENTRY</p>
+          <h2 id="modalTitle">New interview entry</h2>
+        </div>
+        <button type="button" class="icon-btn" id="closeModalBtn">✕</button>
+      </div>
+
+      <div class="form-grid">
+        <label class="field full-span">
+          <span>Interview question *</span>
+          <textarea id="question" rows="3" required placeholder="e.g. Tell me about a time you influenced senior stakeholders."></textarea>
+        </label>
+
+        <label class="field">
+          <span>Category</span>
+          <select id="category"></select>
+        </label>
+
+        <label class="field">
+          <span>Status</span>
+          <select id="status">
+            <option value="draft">Draft</option>
+            <option value="developing">Developing</option>
+            <option value="ready">Interview ready</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span>Company</span>
+          <input id="company" type="text" placeholder="e.g. Atlassian" />
+        </label>
+
+        <label class="field">
+          <span>Role</span>
+          <input id="role" type="text" placeholder="e.g. Senior Data Analyst" />
+        </label>
+
+        <label class="field full-span">
+          <span>Tags</span>
+          <input id="tags" type="text" placeholder="leadership, stakeholder management, DLP" />
+          <small>Separate tags with commas.</small>
+        </label>
+
+        <label class="field full-span star-field situation">
+          <span><b>S</b> Situation</span>
+          <textarea id="situation" rows="5" placeholder="Set the context. What was happening, where and why did it matter?"></textarea>
+        </label>
+
+        <label class="field full-span star-field task">
+          <span><b>T</b> Task</span>
+          <textarea id="task" rows="5" placeholder="What responsibility, objective or challenge did you own?"></textarea>
+        </label>
+
+        <label class="field full-span star-field action">
+          <span><b>A</b> Action</span>
+          <textarea id="action" rows="7" placeholder="What specific actions did you take? Focus on your decisions and contribution."></textarea>
+        </label>
+
+        <label class="field full-span star-field result">
+          <span><b>R</b> Result</span>
+          <textarea id="result" rows="5" placeholder="What changed? Include measurable outcomes, feedback and lessons learned."></textarea>
+        </label>
+
+        <label class="field full-span">
+          <span>Additional notes</span>
+          <textarea id="notes" rows="4" placeholder="Follow-up questions, supporting metrics, reminders or alternative wording."></textarea>
+        </label>
+
+        <label class="checkbox-field">
+          <input id="favourite" type="checkbox" />
+          <span>Mark as favourite</span>
+        </label>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="secondary-btn" id="cancelBtn">Cancel</button>
+        <button type="submit" class="primary-btn">Save entry</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="categoryDialog" class="modal small-modal">
+    <form id="categoryForm" method="dialog">
+      <div class="modal-header">
+        <div>
+          <p class="eyebrow">ORGANISATION</p>
+          <h2>Manage categories</h2>
+        </div>
+        <button type="button" class="icon-btn" id="closeCategoryBtn">✕</button>
+      </div>
+      <div id="categoryManagerList" class="category-manager-list"></div>
+      <div class="inline-add">
+        <input id="newCategoryInput" placeholder="New category name" />
+        <button id="addCategoryBtn" type="button" class="primary-btn">Add</button>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="primary-btn" id="doneCategoriesBtn">Done</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast"></div>
+  <script src="app.js"></script>
+</body>
+</html>
